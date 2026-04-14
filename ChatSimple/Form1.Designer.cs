@@ -105,6 +105,7 @@
             btnEnviar.TabIndex = 7;
             btnEnviar.Text = "Enviar";
             btnEnviar.UseVisualStyleBackColor = true;
+            btnEnviar.Click += btnEnviar_Click;
             // 
             // label3
             // 
@@ -120,9 +121,9 @@
             label4.AutoSize = true;
             label4.Location = new Point(31, 364);
             label4.Name = "label4";
-            label4.Size = new Size(59, 25);
+            label4.Size = new Size(77, 25);
             label4.TabIndex = 9;
-            label4.Text = "label4";
+            label4.Text = "Mensaje";
             // 
             // Form1
             // 
@@ -140,7 +141,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Chat";
             ResumeLayout(false);
             PerformLayout();
         }
