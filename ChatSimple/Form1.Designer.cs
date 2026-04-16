@@ -34,7 +34,7 @@
             txtPuerto = new TextBox();
             txtMensaje = new TextBox();
             rtbHistorial = new RichTextBox();
-            btnIniciar = new Button();
+            btnIniciarServidor = new Button();
             btnEnviar = new Button();
             label3 = new Label();
             label4 = new Label();
@@ -87,15 +87,15 @@
             rtbHistorial.TabIndex = 5;
             rtbHistorial.Text = "";
             // 
-            // btnIniciar
+            // btnIniciarServidor
             // 
-            btnIniciar.Location = new Point(596, 50);
-            btnIniciar.Name = "btnIniciar";
-            btnIniciar.Size = new Size(112, 34);
-            btnIniciar.TabIndex = 6;
-            btnIniciar.Text = "Iniciar Server";
-            btnIniciar.UseVisualStyleBackColor = true;
-            btnIniciar.Click += btnIniciar_Click;
+            btnIniciarServidor.Location = new Point(596, 50);
+            btnIniciarServidor.Name = "btnIniciarServidor";
+            btnIniciarServidor.Size = new Size(112, 34);
+            btnIniciarServidor.TabIndex = 6;
+            btnIniciarServidor.Text = "Iniciar Server";
+            btnIniciarServidor.UseVisualStyleBackColor = true;
+            btnIniciarServidor.Click += btnIniciarServidor_Click;
             // 
             // btnEnviar
             // 
@@ -133,7 +133,7 @@
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(btnEnviar);
-            Controls.Add(btnIniciar);
+            Controls.Add(btnIniciarServidor);
             Controls.Add(rtbHistorial);
             Controls.Add(txtMensaje);
             Controls.Add(txtPuerto);
@@ -154,7 +154,7 @@
         private TextBox txtPuerto;
         private TextBox txtMensaje;
         private RichTextBox rtbHistorial;
-        private Button btnIniciar;
+        private Button btnIniciarServidor;
         private Button btnEnviar;
         private Label label3;
         private Label label4;
