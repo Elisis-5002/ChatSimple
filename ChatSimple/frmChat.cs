@@ -7,7 +7,7 @@ using Microsoft.VisualBasic;
 
 namespace ChatSimple
 {
-    public partial class Form1 : Form
+    public partial class frmChat : Form
     {
         private TcpClient cliente;
         private StreamReader reader;
@@ -18,7 +18,8 @@ namespace ChatSimple
         private readonly object lockClientes = new object();
 
         private bool esServidor = false;
-        public Form1()
+        string usuario;
+        public frmChat()
         {
             InitializeComponent();
         }
@@ -32,29 +33,39 @@ namespace ChatSimple
             {
                 if (respuesta == DialogResult.Yes)
                 {
-                    esServidor |= true;
-                    int puerto = int.Parse(txtPuerto.Text);
-                    TcpListener listener = new TcpListener(IPAddress.Any, puerto);
-                    listener.Start();
-
-
-
-                    rtbHistorial.AppendText("Servidor iniciado en la direccion y puerto:  " + getIP() + ":" + puerto + "...\r\n");
-
-
-                    // Bucle infinito: El servidor nunca deja de aceptar clientes
-                    while (true)
+                    try
                     {
-                        TcpClient nuevoCliente = await listener.AcceptTcpClientAsync();
-                        rtbHistorial.AppendText("¡Un nuevo cliente se ha unido a la sala!\r\n");
+                        esServidor |= true;
+                        int puerto = int.Parse(txtPuerto.Text);
+                        TcpListener listener = new TcpListener(IPAddress.Any, puerto);
+                        listener.Start();
 
-                        // Manejamos cada cliente en una tarea en segundo plano separada
-                        _ = ManejarCliente(nuevoCliente);
+
+
+                        rtbHistorial.AppendText("Servidor iniciado en la direccion y puerto:  " + getIP() + ":" + puerto + "...\r\n");
+
+
+                        // Bucle infinito: El servidor nunca deja de aceptar clientes
+                        while (true)
+                        {
+                            TcpClient nuevoCliente = await listener.AcceptTcpClientAsync();
+                            rtbHistorial.AppendText("¡Un nuevo cliente se ha unido a la sala!\r\n");
+
+                            // Manejamos cada cliente en una tarea en segundo plano separada
+                            _ = ManejarCliente(nuevoCliente);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ya está ese servidor en ejecución: " + ex.Message);
+                        esServidor = false;
+
                     }
                 }
                 else
                 {
-                    string usuario = Interaction.InputBox("Ingrese su nombre de usuario", "Usuario"); 
+                    esServidor = false;
+                    usuario = Interaction.InputBox("Ingrese su nombre de usuario", "Usuario"); 
                     string ip = txtIP.Text;
                     int port = int.Parse(txtPuerto.Text);
 
@@ -70,8 +81,14 @@ namespace ChatSimple
                     reader = new StreamReader(stream);
                     writer = new StreamWriter(stream) { AutoFlush = true };
 
-                    _ = RecibirMensajes();
+                    // Enviar el nombre de usuario al servidor como primer mensaje
+                    if (!string.IsNullOrWhiteSpace(usuario))
+                    {
+                        await writer.WriteLineAsync(usuario);
+                    }
 
+                    _ = RecibirMensajes();
+ 
                 }
             }
 
@@ -89,6 +106,10 @@ namespace ChatSimple
             StreamReader clientReader = new StreamReader(stream);
             StreamWriter clientWriter = new StreamWriter(stream) { AutoFlush = true };
 
+            // Leer el primer mensaje como nombre de usuario del cliente
+            string nombreCliente = await clientReader.ReadLineAsync();
+            if (string.IsNullOrWhiteSpace(nombreCliente)) nombreCliente = "Cliente";
+
             // Añadimos el nuevo cliente a nuestra lista segura
             lock (lockClientes) { clientesConectados.Add(clientWriter); }
 
@@ -104,11 +125,11 @@ namespace ChatSimple
                         // Mostrar en la pantalla del servidor
                         rtbHistorial.Invoke((MethodInvoker)delegate
                         {
-                            rtbHistorial.AppendText("Cliente: " + mensajeRecibido + "\r\n");
+                            rtbHistorial.AppendText(nombreCliente + ": " + mensajeRecibido + "\r\n");
                         });
 
                         // Reenviar a todos los demás clientes de la sala
-                        DifundirMensaje("Alguien dice: " + mensajeRecibido);
+                        DifundirMensaje(nombreCliente + ": " + mensajeRecibido);
                     }
                     else
                     {
@@ -126,7 +147,7 @@ namespace ChatSimple
                 lock (lockClientes) { clientesConectados.Remove(clientWriter); }
                 rtbHistorial.Invoke((MethodInvoker)delegate
                 {
-                    rtbHistorial.AppendText("Un cliente abandonó la sala.\r\n");
+                    rtbHistorial.AppendText(nombreCliente + " abandonó la sala.\r\n");
                 });
                 cliente.Close();
             }
@@ -197,7 +218,7 @@ namespace ChatSimple
             {
                 rtbHistorial.Invoke((MethodInvoker)delegate
                 {
-                    rtbHistorial.AppendText("Cliente Desconectado \n");
+                    rtbHistorial.AppendText( usuario +" Desconectado \n");
                 });
             }
         }

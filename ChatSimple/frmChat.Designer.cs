@@ -1,6 +1,6 @@
 ﻿namespace ChatSimple
 {
-    partial class Form1
+    partial class frmChat
     {
         /// <summary>
         ///  Required designer variable.
@@ -81,6 +81,7 @@
             // 
             // rtbHistorial
             // 
+            rtbHistorial.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             rtbHistorial.Location = new Point(31, 136);
             rtbHistorial.Name = "rtbHistorial";
             rtbHistorial.Size = new Size(677, 217);
@@ -125,7 +126,7 @@
             label4.TabIndex = 9;
             label4.Text = "Mensaje";
             // 
-            // Form1
+            // frmChat
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -140,7 +141,7 @@
             Controls.Add(txtIP);
             Controls.Add(label2);
             Controls.Add(label1);
-            Name = "Form1";
+            Name = "frmChat";
             Text = "Chat";
             ResumeLayout(false);
             PerformLayout();
